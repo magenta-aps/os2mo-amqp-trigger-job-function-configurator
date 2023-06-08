@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: MPL-2.0
 from fastramqpi.config import Settings as FastRAMQPISettings  # type: ignore
 from pydantic import Field
-from pydantic.env_settings import BaseSettings
 
 
-class Settings(BaseSettings):
+class Settings(FastRAMQPISettings):
     """Settings for the engagement elevator AMQP trigger."""
 
     log_level: str = "INFO"

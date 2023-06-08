@@ -15,7 +15,7 @@ variables:
   RELEASE_REGISTRY: docker.io
   RELEASE_REGISTRY_IMAGE: index.docker.io/magentaaps/os2mo-amqp-trigger-job-function-configurator
 
-  PYTEST_COV_MODULE: job_functions_configurator
+  PYTEST_COV_MODULE: job_function_configurator
   PYTEST_COV_FAIL_UNDER: 40
 
   PRECOMMIT_USE_POETRY: "true"

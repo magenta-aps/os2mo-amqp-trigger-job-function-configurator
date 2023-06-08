@@ -1,15 +1,13 @@
 # SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-from typing import Any
-
-import structlog
+import structlog  # type: ignore
 from fastapi import APIRouter
 from fastapi import FastAPI
 from fastramqpi.main import FastRAMQPI  # type: ignore
-from ramqp.depends import Context
+from ramqp.depends import Context  # type: ignore
 from ramqp.depends import RateLimit
 from ramqp.mo import MORouter  # type: ignore
-from ramqp.mo import PayloadType
+from ramqp.mo import PayloadUUID
 
 from .config import get_settings
 from .log import setup_logging
@@ -20,10 +18,8 @@ fastapi_router = APIRouter()
 logger = structlog.get_logger(__name__)
 
 
-@amqp_router.register("*.engagement.*")
-@amqp_router.register("employee.engagements.create")
-@amqp_router.register("employee.engagements.edit")
-async def listener(context: Context, payload: PayloadType, _: RateLimit) -> None:
+@amqp_router.register("engagements")
+async def listener(context: Context, payload: PayloadUUID, _: RateLimit) -> None:
     """
     This function listens on changes made to:
     ServiceType - engagements
@@ -36,6 +32,7 @@ async def listener(context: Context, payload: PayloadType, _: RateLimit) -> None
     """
 
     gql_client = context["graphql_session"]
+    print("************", gql_client)
     print("!!!!!!!!!", context)
 
     print("@@@@@@@@@@@@@", payload)

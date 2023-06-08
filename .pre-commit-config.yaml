@@ -29,7 +29,7 @@ repos:
 
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.1.1
+    rev: v1.3.0
     hooks:
       - id: mypy
         args: [ --config-file=pyproject.toml ]
@@ -47,15 +47,6 @@ repos:
     hooks:
       - id: prettier
         files: \.(js|vue|css|html)$
-
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        files: backend/mora/graphapi/
-        args: [ "--convention=google", "--add-ignore=D1" ]
-        additional_dependencies:
-          - toml
 
   - repo: https://github.com/magenta-aps/pre-commit-hooks
     rev: 477acf0d
@@ -81,8 +72,3 @@ repos:
     rev: v1.15.0
     hooks:
       - id: refurb
-
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.19
-    hooks:
-      - id: shellcheck
