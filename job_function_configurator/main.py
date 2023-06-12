@@ -18,30 +18,26 @@ fastapi_router = APIRouter()
 logger = structlog.get_logger(__name__)
 
 
-@amqp_router.register("engagements")
-async def listener(context: Context, payload: PayloadUUID, _: RateLimit) -> None:
+@amqp_router.register("engagement")
+async def listener(
+    context: Context, engagement_uuid: PayloadUUID, _: RateLimit
+) -> None:
     """
     This function listens on changes made to:
     ServiceType - engagements
     ObjectType - job function
-    RequestType - create/edit
 
-    We receive a payload, of type Payload, with content of:
-    Organisation Units uuid - payload.uuid
-    Manager uuid - payload.object_uuid
+    We receive a payload, of type PayloadUUID, with content of:
+    engagement_uuid - UUID of the engagement.
     """
 
     gql_client = context["graphql_session"]
     print("************", gql_client)
     print("!!!!!!!!!", context)
 
-    print("@@@@@@@@@@@@@", payload)
-    print("%%%%%% DONE!")
-
-
-@fastapi_router.post("/dum/dum")
-async def dummy() -> dict[str, str]:
-    return {"everything": "42"}
+    print("@@@@@@@@@@@@@", engagement_uuid)
+    print("^^^^^^^^^^^^^^", type(engagement_uuid))
+    print("%%%%%% DONEsoooooOOOØØØ!")
 
 
 def create_fastramqpi(**kwargs) -> FastRAMQPI:
