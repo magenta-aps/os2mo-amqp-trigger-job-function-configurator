@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 from fastramqpi.config import Settings as FastRAMQPISettings  # type: ignore
-from pydantic import Field
 
 
 class Settings(FastRAMQPISettings):
@@ -14,10 +13,6 @@ class Settings(FastRAMQPISettings):
 
         frozen = True
         env_nested_delimiter = "__"
-
-    fastramqpi: FastRAMQPISettings = Field(
-        default_factory=FastRAMQPISettings, description="FastRAMQPI settings."
-    )
 
 
 def get_settings(*args, **kwargs) -> Settings:
