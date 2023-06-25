@@ -1,16 +1,17 @@
 # SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-import structlog  # type: ignore
+import structlog
 from fastapi import APIRouter
 from fastapi import FastAPI
-from fastramqpi.main import FastRAMQPI  # type: ignore
-from ramqp.depends import Context  # type: ignore
+from fastramqpi.main import FastRAMQPI
+from ramqp.depends import Context
 from ramqp.depends import RateLimit
-from ramqp.mo import MORouter  # type: ignore
+from ramqp.mo import MORouter
 from ramqp.mo import PayloadUUID
 
 from .config import get_settings
 from .log import setup_logging
+from .process_events import process_engagement_events
 
 amqp_router = MORouter()
 fastapi_router = APIRouter()
@@ -29,15 +30,17 @@ async def listener(
 
     We receive a payload, of type PayloadUUID, with content of:
     engagement_uuid - UUID of the engagement.
+
+    Args:
+    gql_client: A GraphQL client to perform the various queries
+
+    engagement_uuid: UUID of the engagement
+
+    Returns:
+        A successful creation, or update, of an engagement or None
     """
-
     gql_client = context["graphql_session"]
-    print("************", gql_client)
-    print("!!!!!!!!!", context)
-
-    print("@@@@@@@@@@@@@", engagement_uuid)
-    print("^^^^^^^^^^^^^^", type(engagement_uuid))
-    print("%%%%%% DONEsoooooOOOØØØ!")
+    await process_engagement_events(gql_client, engagement_uuid)
 
 
 def create_fastramqpi(**kwargs) -> FastRAMQPI:
