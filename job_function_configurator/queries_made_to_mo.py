@@ -26,8 +26,8 @@ async def get_engagement_object(
     """
     query = gql(
         """
-        query MyQuery($uuid_list: [UUID!]) {
-          engagements(uuids: $uuid_list) {
+        query GetEngagement($engagement_uuids: [UUID!]) {
+          engagements(uuids: $engagement_uuids) {
             objects {
               current {
                 extension_1
@@ -42,7 +42,7 @@ async def get_engagement_object(
                 extension_9
                 fraction
                 job_function {
-                  full_name
+                  name
                   user_key
                   uuid
                 }
@@ -54,7 +54,7 @@ async def get_engagement_object(
         """
     )
     response = await gql_client.execute(
-        query, variable_values={"uuid_list": str(engagement_uuid)}
+        query, variable_values={"engagement_uuids": str(engagement_uuid)}
     )
     print("!!!!!!!!!!!", response)
     return parse_obj_as(GetJobFunctions, {"data": response})

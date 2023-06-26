@@ -1,8 +1,9 @@
 from uuid import UUID
 
 import structlog
-from queries_made_to_mo import get_engagement_object
 from raclients.graph.client import PersistentGraphQLClient
+
+from .queries_made_to_mo import get_engagement_object
 
 logger = structlog.get_logger(__name__)
 

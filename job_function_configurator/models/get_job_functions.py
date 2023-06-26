@@ -37,41 +37,43 @@
 #     }
 #   }
 # }
+
 from dataclasses import dataclass
+from typing import Optional, List
 
 
 @dataclass
 class Class:
     full_name: str
-    user_key: str | None = None
-    uuid: str | None = None
+    user_key: str
+    uuid: str
 
 
 @dataclass
 class Engagement:
     job_function: Class
-    extension_1: str | None = None
-    extension_10: str | None = None
-    extension_2: str | None = None
-    extension_3: str | None = None
-    extension_4: str | None = None
-    extension_5: str | None = None
-    extension_6: str | None = None
-    extension_7: str | None = None
-    extension_8: str | None = None
-    extension_9: str | None = None
-    fraction: int | None = None
+    extension_1: Optional[str] = None
+    extension_10: Optional[str] = None
+    extension_2: Optional[str] = None
+    extension_3: Optional[str] = None
+    extension_4: Optional[str] = None
+    extension_5: Optional[str] = None
+    extension_6: Optional[str] = None
+    extension_7: Optional[str] = None
+    extension_8: Optional[str] = None
+    extension_9: Optional[str] = None
+    fraction: Optional[int] = None
 
 
 @dataclass
 class EngagementResponse:
     uuid: str
-    current: Engagement | None = None
+    current: Optional[Engagement] = None
 
 
 @dataclass
 class EngagementResponsePaged:
-    objects: list[EngagementResponse]
+    objects: List[EngagementResponse]
 
 
 @dataclass
@@ -86,5 +88,5 @@ class Error:
 
 @dataclass
 class GetJobFunctions:
-    data: Data | None = None
-    errors: list[Error] | None = None
+    data: Optional[Data] = None
+    errors: Optional[List[Error]] = None
