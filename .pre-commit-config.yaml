@@ -10,22 +10,26 @@ repos:
     hooks:
       - id: pyupgrade
         args: [ "--py311-plus" ]
+        exclude: ^job_function_configurator/models/
 
   - repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
       - id: black
+        exclude: ^job_function_configurator/models/
 
   - repo: https://github.com/asottile/reorder_python_imports
     rev: v3.9.0
     hooks:
       - id: reorder-python-imports
+        exclude: ^job_function_configurator/models/
 
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
       - id: flake8
         args: [ "--extend-ignore=B008,W503,E203", "--max-line-length=101" ]
+        exclude: ^job_function_configurator/models/
 
 
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -50,6 +54,7 @@ repos:
     hooks:
       - id: prettier
         files: \.(js|vue|css|html)$
+        exclude: ^job_function_configurator/models/
 
   - repo: https://github.com/magenta-aps/pre-commit-hooks
     rev: 477acf0d
@@ -61,17 +66,28 @@ repos:
     rev: v4.4.0
     hooks:
       - id: check-builtin-literals
+        exclude: ^job_function_configurator/models/
       - id: check-byte-order-marker
+        exclude: ^job_function_configurator/models/
       - id: check-docstring-first
+        exclude: ^job_function_configurator/models/
       - id: check-executables-have-shebangs
+        exclude: ^job_function_configurator/models/
       - id: check-merge-conflict
+        exclude: ^job_function_configurator/models/
       - id: check-yaml
+        exclude: ^job_function_configurator/models/
       - id: end-of-file-fixer
+        exclude: ^job_function_configurator/models/
       - id: pretty-format-json
+        exclude: ^job_function_configurator/models/
       - id: mixed-line-ending
+        exclude: ^job_function_configurator/models/
       - id: trailing-whitespace
+        exclude: ^job_function_configurator/models/
 
   - repo: https://github.com/dosisod/refurb
     rev: v1.15.0
     hooks:
       - id: refurb
+        exclude: ^job_function_configurator/models/

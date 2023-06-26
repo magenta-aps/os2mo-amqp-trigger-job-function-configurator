@@ -39,8 +39,12 @@ async def listener(
     Returns:
         A successful creation, or update, of an engagement or None
     """
-    gql_client = context["graphql_session"]
-    await process_engagement_events(gql_client, engagement_uuid)
+    gql_session = context["graphql_session"]
+    print("$$$$$$$$$$$$$$$$", gql_session)
+    print("%%%%%%%%%%%%%%%%%%%%%%", context)
+    print("^^^^^^^^^^^^^^^^^^^^^^^^^", context["graphql_session"])
+    print("@@@@@@@@@@@@@@@@@@@@@@", engagement_uuid)
+    await process_engagement_events(gql_session, engagement_uuid)
 
 
 def create_fastramqpi(**kwargs) -> FastRAMQPI:
