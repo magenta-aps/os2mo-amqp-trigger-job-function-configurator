@@ -84,6 +84,7 @@ class Engagement:
     job_function: EngagementClass
     employee: List[Employee]
     extension_2: Optional[str] = None
+    extension_3: Optional[str] = None
     primary: Optional[EngagementClass] = None
 
 
