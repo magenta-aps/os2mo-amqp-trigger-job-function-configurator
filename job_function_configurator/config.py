@@ -8,6 +8,23 @@ class Settings(FastRAMQPISettings):
 
     log_level: str = "INFO"
 
+    # HELPERS
+    avoided_emails: list = ["@viborgskoler", "@scviborg.dk"]  # DOES THIS WORK???
+    address_type_scope: str = "EMAIL"
+    blacklisted_keys: list = [
+        "1550",
+        "1551",
+        "1552",
+        "1553",
+        "1554",
+        "1555",
+        "1556",
+        "1557",
+        "1558",
+        "1559",
+        "3000",
+    ]
+
     class Config:
         """Settings are frozen."""
 

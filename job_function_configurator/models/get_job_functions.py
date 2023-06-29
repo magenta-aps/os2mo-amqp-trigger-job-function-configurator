@@ -13,24 +13,33 @@
 #
 # 4 - The model will be shown in terminal. Copy and paste the output in your file.
 # query GetJobFunctions {
-#   engagements {
+#   engagements{
 #     objects {
 #       current {
-#         extension_1
-#         extension_10
 #         extension_2
-#         extension_3
-#         extension_4
-#         extension_5
-#         extension_6
-#         extension_7
-#         extension_8
-#         extension_9
-#         fraction
+#         is_primary
 #         job_function {
-#           full_name
+#           name
 #           user_key
 #           uuid
+#         }
+#         primary {
+#           name
+#           user_key
+#           name
+#           uuid
+#         }
+#         employee {
+#           uuid
+#           addresses {
+#             name
+#             user_key
+#             address_type {
+#               scope
+#               user_key
+#               name
+#             }
+#           }
 #         }
 #       }
 #       uuid
@@ -43,26 +52,39 @@ from typing import Optional, List
 
 
 @dataclass
-class Class:
-    full_name: str
+class AddressClass:
+    user_key: str
+    name: str
+    scope: Optional[str] = None
+
+
+@dataclass
+class Address:
+    user_key: str
+    address_type: AddressClass
+    name: Optional[str] = None
+
+
+@dataclass
+class Employee:
+    uuid: str
+    addresses: List[Address]
+
+
+@dataclass
+class EngagementClass:
+    name: str
     user_key: str
     uuid: str
 
 
 @dataclass
 class Engagement:
-    job_function: Class
-    extension_1: Optional[str] = None
-    extension_10: Optional[str] = None
+    is_primary: bool
+    job_function: EngagementClass
+    employee: List[Employee]
     extension_2: Optional[str] = None
-    extension_3: Optional[str] = None
-    extension_4: Optional[str] = None
-    extension_5: Optional[str] = None
-    extension_6: Optional[str] = None
-    extension_7: Optional[str] = None
-    extension_8: Optional[str] = None
-    extension_9: Optional[str] = None
-    fraction: Optional[int] = None
+    primary: Optional[EngagementClass] = None
 
 
 @dataclass

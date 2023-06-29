@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
+# SPDX-License-Identifier: MPL-2.0
 from uuid import UUID
 
 import structlog
@@ -17,8 +19,8 @@ async def get_engagement_object(
     Get the engagement and related fields.
 
     Args:
-        engagement_uuid: UUID of the engagement being edited or created.
         gql_client: The GraphQL client to perform the query.
+        engagement_uuid: UUID of the engagement being edited or created.
 
     Returns:
         Engagement object consisting of extension fields, job functions and
@@ -30,21 +32,30 @@ async def get_engagement_object(
           engagements(uuids: $engagement_uuids) {
             objects {
               current {
-                extension_1
-                extension_10
                 extension_2
-                extension_3
-                extension_4
-                extension_5
-                extension_6
-                extension_7
-                extension_8
-                extension_9
-                fraction
+                is_primary
                 job_function {
                   name
                   user_key
                   uuid
+                }
+                primary {
+                  name
+                  user_key
+                  name
+                  uuid
+                }
+                employee {
+                  uuid
+                  addresses {
+                    name
+                    user_key
+                    address_type {
+                      scope
+                      user_key
+                      name
+                    }
+                  }
                 }
               }
               uuid
@@ -56,5 +67,4 @@ async def get_engagement_object(
     response = await gql_client.execute(
         query, variable_values={"engagement_uuids": str(engagement_uuid)}
     )
-    print("!!!!!!!!!!!", response)
     return parse_obj_as(GetJobFunctions, {"data": response})
