@@ -33,6 +33,7 @@ async def get_engagement_object(
             objects {
               current {
                 extension_2
+                extension_3
                 is_primary
                 job_function {
                   name
