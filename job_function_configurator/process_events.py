@@ -6,14 +6,16 @@ import structlog
 from more_itertools import one
 from raclients.graph.client import PersistentGraphQLClient
 
+from .config import get_settings
 from .helper_functions import check_for_avoided_emails
 from .helper_functions import check_for_blacklisted_engagement_job_function_user_keys
 from .helper_functions import check_for_primary_engagement
 from .helper_functions import get_email_address_type_uuid_from_gql
-from .mutations_made_to_mo import update_from_ad_extension_field_for_engagement
+from .mutations_made_to_mo import update_extension_field_for_engagement
 from .queries_made_to_mo import get_engagement_object
 
 logger = structlog.get_logger(__name__)
+settings = get_settings()
 
 
 async def process_engagement_events(
@@ -43,8 +45,8 @@ async def process_engagement_events(
         engagement_object_parsed_as_model = await get_engagement_object(
             gql_client, engagement_uuid
         )
-    except ValueError:
-        logger.error("Engagement object not found")
+    except ValueError as exc:
+        logger.error("Engagement object not found:", exc.args[0])
         return None
 
     # Mypy insists on making sure "data" is not empty.
@@ -58,17 +60,18 @@ async def process_engagement_events(
         if check_for_blacklisted_engagement_job_function_user_keys(
             engagement_fields.job_function.user_key
         ):
-            print(  # TODO Make mutation for empty string in extension_x field here.
-                "May not be used, write out empty strings",
-                engagement_fields.job_function.user_key,
+            # Codes are blacklisted. Write empty values.
+            await update_extension_field_for_engagement(
+                gql_client,
+                engagement_uuid,
+                settings.name_of_extension_field_to_update,
+                settings.emtpy_content_for_extension_field_update,
             )
-        else:  # Continue logic, check for conditions to meet for AD job function title.
-            print(
-                "User key is not banned. Go ahead and use it: implement logic, bep bop bup."
-            )
+            return None
 
-    except ValueError:
-        logger.error("Job functions user key not found")
+    except ValueError as exc:
+        logger.error("A mutation was not made, error occurred:", exc.args[0])
+        return None
     try:
         # Get addresses to check for email values.
         addresses = one(engagement_fields.employee).addresses
@@ -84,11 +87,26 @@ async def process_engagement_events(
         ):
             new_job_function = engagement_fields.extension_2
             # Make a mutation, write the contents of extension_2, to extension_x.
-            await update_from_ad_extension_field_for_engagement(
-                gql_client, engagement_uuid, new_job_function
+            await update_extension_field_for_engagement(
+                gql_client,
+                engagement_uuid,
+                settings.name_of_extension_field_to_update,
+                new_job_function,
             )
+        else:
+            try:
+                job_function_name_from_sd = engagement_fields.job_function.name
+                await update_extension_field_for_engagement(
+                    gql_client,
+                    engagement_uuid,
+                    settings.name_of_extension_field_to_update,
+                    job_function_name_from_sd,
+                )
+            except ValueError as exc:
+                logger.error("Job function name apparently not found:", exc.args[0])
+                return None
 
     except ValueError as exc:
-        logger.error("No emails or primary engagement found.", exc.args[0])
+        logger.error("A mutation was not made, error occurred:", exc.args[0])
 
     logger.info("An update was successfully made")
