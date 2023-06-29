@@ -25,6 +25,10 @@ class Settings(FastRAMQPISettings):
         "3000",
     ]
 
+    # MUTATORS
+    emtpy_content_for_extension_field_update: str = ""
+    name_of_extension_field_to_update: str = "extension_3"
+
     class Config:
         """Settings are frozen."""
 

@@ -9,8 +9,11 @@ from raclients.graph.client import PersistentGraphQLClient
 logger = structlog.get_logger()
 
 
-async def update_from_ad_extension_field_for_engagement(
-    gql_client: PersistentGraphQLClient, engagement_uuid: UUID, new_job_title: str
+async def update_extension_field_for_engagement(
+    gql_client: PersistentGraphQLClient,
+    engagement_uuid: UUID,
+    extension_: str,
+    new_job_title: str,
 ):
     """
     Edit the engagements' job function to use the title found in the
@@ -19,6 +22,7 @@ async def update_from_ad_extension_field_for_engagement(
     Args:
         gql_client: The GraphQL client to perform the query.
         engagement_uuid: UUID of the engagement to perform an edit on.
+        extension_: Name extension field to update.
         new_job_title: The title to edit the job function with.
 
     Returns:
@@ -36,7 +40,7 @@ async def update_from_ad_extension_field_for_engagement(
     update_engagement_variables = {
         "input": {
             "uuid": str(engagement_uuid),  # UUID of the engagement to be updated.
-            "extension_3": new_job_title,
+            extension_: new_job_title,
             "validity": {"from": datetime.date.today().isoformat()},  # From today.
         }
     }
