@@ -7,10 +7,9 @@ from more_itertools import one
 from raclients.graph.client import PersistentGraphQLClient
 
 from .config import get_settings
-from .helper_functions import check_for_avoided_emails
 from .helper_functions import check_for_blacklisted_engagement_job_function_user_keys
-from .helper_functions import check_for_primary_engagement
-from .helper_functions import get_email_address_type_uuid_from_gql
+from .helper_functions import check_for_email_not_in_avoided_list
+from .helper_functions import get_email_from_all_address_types
 from .mutations_made_to_mo import update_extension_field_for_engagement
 from .queries_made_to_mo import get_engagement_object
 
@@ -36,9 +35,9 @@ async def process_engagement_events(
     Returns:
         A successful creation, or update, of an engagement or None
     """
-    print(")~&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& STARTING JOBSSSSS")
+    print("STARTING AN EVENT")
     logger.info(
-        "Starting event of engagement create/update, with uuid of:",
+        "Starting event of engagement create/update/delete, with uuid of:",
         engagement_uuid=engagement_uuid,
     )
     try:  # Make a Graphql call to pull the engagement.
@@ -64,7 +63,7 @@ async def process_engagement_events(
 
     try:  # Check whether job functions codes are in blacklist.
         if check_for_blacklisted_engagement_job_function_user_keys(
-            engagement_fields.job_function.user_key
+            engagement_fields.job_function.user_key, settings.blacklisted_keys
         ):
             # Codes are blacklisted. Write empty values.
             await update_extension_field_for_engagement(
@@ -73,7 +72,6 @@ async def process_engagement_events(
                 settings.name_of_extension_field_to_update,
                 settings.emtpy_content_for_extension_field_update,
             )
-
             return None
 
     except ValueError as exc:
@@ -88,7 +86,10 @@ async def process_engagement_events(
         # Get addresses to check for email values.
         addresses = one(engagement_fields.employee).addresses
 
-        emails = get_email_address_type_uuid_from_gql(addresses)
+        emails = get_email_from_all_address_types(
+            addresses, settings.address_type_scope
+        )
+
         # Get whether the engagement is primary or not.
         engagement_type = engagement_fields.is_primary
 
@@ -100,8 +101,9 @@ async def process_engagement_events(
         # If the engagement is primary and the email is not of avoided type,
         # then go ahead and use the contents of extension_2.
         assert emails and engagement_type is not None  # For mypy
-        if check_for_avoided_emails(emails) and check_for_primary_engagement(
-            engagement_type
+        if (
+            check_for_email_not_in_avoided_list(emails, settings.avoided_emails)
+            and engagement_type
         ):
             new_job_function = engagement_fields.extension_2
             # Make a mutation, write the contents of extension_2, to extension_x.
@@ -131,5 +133,5 @@ async def process_engagement_events(
         print(exc.args[0])
 
         logger.error("A mutation was not made, error occurred:", exc.args[0])
-
+    print("FINISHED PROCESSING THE EVENT")
     logger.info("An update was successfully made")

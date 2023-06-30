@@ -9,7 +9,8 @@ class Settings(FastRAMQPISettings):
     log_level: str = "INFO"
 
     # HELPERS
-    avoided_emails: list = ["@viborgskoler", "@scviborg.dk"]  # DOES THIS WORK???
+    # Do not use "@" in emails, as we're splitting on it in the helper function.
+    avoided_emails: list = ["viborgskoler.dk", "scviborg.dk"]
     address_type_scope: str = "EMAIL"
     blacklisted_keys: list = [
         "1550",
