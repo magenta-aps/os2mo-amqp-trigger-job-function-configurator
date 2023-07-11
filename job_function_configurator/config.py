@@ -10,31 +10,21 @@ class Settings(FastRAMQPISettings):
 
     # HELPERS
     # Do not use "@" in emails, as we're splitting on it in the helper function.
-    avoided_emails: list = ["viborgskoler.dk", "scviborg.dk"]
-    address_type_scope: str = "EMAIL"
-    blacklisted_keys: list = [
-        "1550",
-        "1551",
-        "1552",
-        "1553",
-        "1554",
-        "1555",
-        "1556",
-        "1557",
-        "1558",
-        "1559",
-        "3000",
-    ]
+    email_user_key_for_address_type: list = []
+    address_type_scope: str
+    avoided_emails: list = []
+    blacklisted_keys: list = []
 
     # MUTATORS
     emtpy_content_for_extension_field_update: str = " "
-    name_of_extension_field_to_update: str = "extension_3"
+    name_of_extension_field_to_update: str
 
     class Config:
         """Settings are frozen."""
 
         frozen = True
         env_nested_delimiter = "__"
+        env_file_encoding = "utf-8"
 
 
 def get_settings(*args, **kwargs) -> Settings:
