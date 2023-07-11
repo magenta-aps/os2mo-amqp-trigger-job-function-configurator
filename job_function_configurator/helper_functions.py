@@ -3,13 +3,13 @@
 
 
 def check_for_email_not_in_avoided_list(
-    emails: list, list_of_emails_to_avoid: list
+    email: str, list_of_emails_to_avoid: list
 ) -> bool:
     """
     A helper function used to check whether the persons
     email is allowed or is in the list to be avoided.
     Args:
-        emails: The persons email, if any.
+        email: The persons email, if any.
         list_of_emails_to_avoid: List of banned email from customer settings.
 
     Returns:
@@ -19,7 +19,7 @@ def check_for_email_not_in_avoided_list(
     Example:
         ['@avoided_email', '@may_not_use', '@bad_email']
     """
-    return all(email.split("@")[1] not in list_of_emails_to_avoid for email in emails)
+    return email.split("@")[1] not in list_of_emails_to_avoid
 
 
 def get_email_from_all_address_types(
@@ -29,8 +29,8 @@ def get_email_from_all_address_types(
     Filtering through all address types to only extract emails.
 
     Args:
-        address_list: - A payload with all address types.
-        scope_on_address_type: - The scope on which address type to look for.
+        address_list: - A payload with all emails.
+        scope_on_address_type: - The scope on which email types to look for.
 
     Returns:
         A list of all possible emails.
@@ -60,7 +60,4 @@ def check_for_blacklisted_engagement_job_function_user_keys(
         False - if the user key is not blacklisted.
         True - if the user key is in the blacklist.
     """
-    if job_function in blacklisted_user_keys:
-        return True
-
-    return False
+    return job_function in blacklisted_user_keys

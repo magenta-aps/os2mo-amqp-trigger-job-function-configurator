@@ -9,9 +9,9 @@ from ramqp.depends import RateLimit
 from ramqp.mo import MORouter
 from ramqp.mo import PayloadUUID
 
-from .config import get_settings
-from .log import setup_logging
-from .process_events import process_engagement_events
+from job_function_configurator.config import get_settings
+from job_function_configurator.log import setup_logging
+from job_function_configurator.process_events import process_engagement_events
 
 amqp_router = MORouter()
 fastapi_router = APIRouter()

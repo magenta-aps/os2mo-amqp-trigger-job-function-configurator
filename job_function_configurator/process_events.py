@@ -6,12 +6,17 @@ import structlog
 from more_itertools import one
 from raclients.graph.client import PersistentGraphQLClient
 
-from .config import get_settings
-from .helper_functions import check_for_blacklisted_engagement_job_function_user_keys
-from .helper_functions import check_for_email_not_in_avoided_list
-from .helper_functions import get_email_from_all_address_types
-from .mutations_made_to_mo import update_extension_field_for_engagement
-from .queries_made_to_mo import get_engagement_object
+from job_function_configurator.config import get_settings
+from job_function_configurator.helper_functions import (
+    check_for_blacklisted_engagement_job_function_user_keys,
+)
+from job_function_configurator.helper_functions import (
+    check_for_email_not_in_avoided_list,
+)
+from job_function_configurator.mutations_made_to_mo import (
+    update_extension_field_for_engagement,
+)
+from job_function_configurator.queries_made_to_mo import get_engagement_object
 
 logger = structlog.get_logger(__name__)
 settings = get_settings()
@@ -24,8 +29,6 @@ async def process_engagement_events(
     A function for handling the various events made involving an engagement.
     This involves checking whether the engagement has a job function containing
     sensitive information, and to potentially overwrite this information.
-    Once the engagement satisfies our quota, we either create it, or update it
-    accordingly.
 
     Args:
         gql_client: A GraphQL client to perform the various queries
@@ -35,14 +38,14 @@ async def process_engagement_events(
     Returns:
         A successful creation, or update, of an engagement or None
     """
-    print("STARTING AN EVENT")
+    print("LISTENING ON AN EVENT")
     logger.info(
-        "Starting event of engagement create/update/delete, with uuid of:",
+        "Listening on a create/update/delete engagement event, with uuid of:",
         engagement_uuid=engagement_uuid,
     )
     try:  # Make a Graphql call to pull the engagement.
         engagement_object_parsed_as_model = await get_engagement_object(
-            gql_client, engagement_uuid
+            gql_client, engagement_uuid, settings.email_user_key_for_address_type
         )
 
     except ValueError as exc:
@@ -58,7 +61,7 @@ async def process_engagement_events(
     ).current
 
     if not engagement_fields:
-        print("The engagement must have just been ended. Do nothing.")
+        logger.debug(f"No current engagements found for {engagement_uuid=}.")
         return None
 
     try:  # Check whether job functions codes are in blacklist.
@@ -79,19 +82,19 @@ async def process_engagement_events(
         logger.error("A mutation was not made, error occurred:", exc.args[0])
         return None
 
-    emails = None
-    engagement_type = None
+    email = None
+    primary_status = None
 
     try:
         # Get addresses to check for email values.
-        addresses = one(engagement_fields.employee).addresses
+        if (
+            one(one(engagement_fields.employee).addresses).address_type.scope
+            == settings.address_type_scope
+        ):
+            email = one(one(engagement_fields.employee).addresses).name
 
-        emails = get_email_from_all_address_types(
-            addresses, settings.address_type_scope
-        )
-
-        # Get whether the engagement is primary or not.
-        engagement_type = engagement_fields.is_primary
+            # Get whether the engagement is primary or not.
+            primary_status = engagement_fields.is_primary
 
     except ValueError as exc:
         print(exc.args[0])
@@ -100,19 +103,20 @@ async def process_engagement_events(
     try:
         # If the engagement is primary and the email is not of avoided type,
         # then go ahead and use the contents of extension_2.
-        assert emails and engagement_type is not None  # For mypy
-        if (
-            check_for_email_not_in_avoided_list(emails, settings.avoided_emails)
-            and engagement_type
-        ):
-            new_job_function = engagement_fields.extension_2
-            # Make a mutation, write the contents of extension_2, to extension_x.
-            await update_extension_field_for_engagement(
-                gql_client,
-                engagement_uuid,
-                settings.name_of_extension_field_to_update,
-                new_job_function,
-            )
+        # assert emails and primary_status is not None  # For mypy
+        if email is not None:
+            if (
+                check_for_email_not_in_avoided_list(email, settings.avoided_emails)
+                and primary_status
+            ):
+                new_job_function = engagement_fields.extension_2
+                # Make a mutation, write the contents of extension_2, to extension_x.
+                await update_extension_field_for_engagement(
+                    gql_client,
+                    engagement_uuid,
+                    settings.name_of_extension_field_to_update,
+                    new_job_function,
+                )
 
         else:
             try:
