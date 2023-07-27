@@ -3,13 +3,12 @@
 from fastramqpi.config import Settings as FastRAMQPISettings
 
 
-class Settings(FastRAMQPISettings):
+class JobFunctionSettings(FastRAMQPISettings):
     """Settings for the engagement elevator AMQP trigger."""
 
     log_level: str = "INFO"
 
     # HELPERS
-    # Do not use "@" in emails, as we're splitting on it in the helper function.
     email_user_key_for_address_type: list = []
     address_type_scope: str
     avoided_emails: list = []
@@ -27,5 +26,5 @@ class Settings(FastRAMQPISettings):
         env_file_encoding = "utf-8"
 
 
-def get_settings(*args, **kwargs) -> Settings:
-    return Settings(*args, **kwargs)
+def get_settings(*args, **kwargs) -> JobFunctionSettings:
+    return JobFunctionSettings(*args, **kwargs)

@@ -33,6 +33,9 @@ async def get_engagement_object(
           engagements(uuids: $engagement_uuids) {
             objects {
               current {
+                validity {
+                  from
+                }
                 extension_2
                 extension_3
                 is_primary
