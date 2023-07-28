@@ -1,10 +1,11 @@
-# SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
+# SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 version: "3.9"
 services:
   configurator:
-    build: .
-    command: ["uvicorn", "--factory", "app.main:create_app", "--host", "0.0.0.0", "--reload"]
+    build:
+      context: .
+    command: ["uvicorn", "--factory", "job_function_configurator.main:create_app", "--host", "0.0.0.0", "--reload"]
     env_file:
       - docker.env
     environment:

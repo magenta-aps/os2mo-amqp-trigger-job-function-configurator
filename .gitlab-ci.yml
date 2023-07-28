@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
+# SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 stages:
   - lint
@@ -19,7 +19,7 @@ variables:
   PYTEST_COV_FAIL_UNDER: 0
 
   PRECOMMIT_USE_POETRY: "true"
-  POETRY_VERSION: "1.5.0"
+  POETRY_VERSION: "1.5.1"
 
   PRODUCT: os2mo
   COMPONENT: job_function_configurator
@@ -50,16 +50,9 @@ include:
   - project: labs/salt-automation
     file:
     - gitlab-ci-templates/common/config-updater-flux.v1.yml
-    - gitlab-ci-templates/common/config-updater-meta.v1.yml
+    - gitlab-ci-templates/common/config-updater-salt.v1.yml
     - gitlab-ci-templates/common/conventional-commits.v1.yml
-    - gitlab-ci-templates/common/docker-build-meta.v2.yml
+    - gitlab-ci-templates/common/docker-build.v1.yml
     - gitlab-ci-templates/common/docker-release.v1.yml
     - gitlab-ci-templates/common/pre-commit.v1.yml
     - gitlab-ci-templates/python/pytest.v1.yml
-
-# Build
-########
-Build:
-  extends: .build-docker
-  variables:
-    BUILD_DOCKER_EXTRA_FLAGS: "--build-arg=COMMIT_SHA=${CI_COMMIT_SHA} --build-arg=COMMIT_TAG=${CI_COMMIT_TAG}"

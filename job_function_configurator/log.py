@@ -1,9 +1,8 @@
-# SPDX-FileCopyrightText: Magenta ApS
-#
+# SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 import logging
 
-import structlog  # type: ignore
+import structlog
 
 
 def setup_logging(log_level_name: str) -> None:
