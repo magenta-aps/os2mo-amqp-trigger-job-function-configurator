@@ -61,7 +61,7 @@ repos:
           - aiohttp
           - fastapi
           - httpx
-          - pydantic
+          - pydantic==1.10.9
           - starlette_context
           - strawberry-graphql
           - pytest
