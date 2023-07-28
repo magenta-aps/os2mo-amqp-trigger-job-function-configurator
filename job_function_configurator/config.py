@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
+# SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 from fastramqpi.config import Settings as FastRAMQPISettings
 
@@ -16,7 +16,6 @@ class JobFunctionSettings(FastRAMQPISettings):
 
     # MUTATORS
     emtpy_content_for_extension_field_update: str = " "
-    name_of_extension_field_to_update: str
 
     class Config:
         """Settings are frozen."""

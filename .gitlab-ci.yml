@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
+# SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 stages:
   - lint
@@ -19,7 +19,7 @@ variables:
   PYTEST_COV_FAIL_UNDER: 0
 
   PRECOMMIT_USE_POETRY: "true"
-  POETRY_VERSION: "1.5.0"
+  POETRY_VERSION: "1.5.1"
 
   PRODUCT: os2mo
   COMPONENT: job_function_configurator

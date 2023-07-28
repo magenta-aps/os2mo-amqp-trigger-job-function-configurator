@@ -1,7 +1,5 @@
-# SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
+# SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-
-
 def check_for_email_not_in_avoided_list(
     email: str, list_of_emails_to_avoid: list
 ) -> bool:
@@ -20,29 +18,6 @@ def check_for_email_not_in_avoided_list(
         ['@avoided_email', '@may_not_use', '@bad_email']
     """
     return email.split("@")[1] not in list_of_emails_to_avoid
-
-
-def get_email_from_all_address_types(
-    address_list: list, scope_on_address_type: str
-) -> list:
-    """
-    Filtering through all address types to only extract emails.
-
-    Args:
-        address_list: - A payload with all emails.
-        scope_on_address_type: - The scope on which email types to look for.
-
-    Returns:
-        A list of all possible emails.
-
-    Example:
-        ['onetwo@three.com']
-    """
-    return [
-        address["name"]
-        for address in address_list
-        if address["address_type"]["scope"] == scope_on_address_type
-    ]
 
 
 def check_for_blacklisted_engagement_job_function_user_keys(
