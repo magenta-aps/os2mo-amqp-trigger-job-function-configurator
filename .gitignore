@@ -2,3 +2,6 @@
 # SPDX-License-Identifier: MPL-2.0
 .idea
 **/*__pycache__
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
