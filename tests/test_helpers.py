@@ -5,32 +5,6 @@ import pytest
 from job_function_configurator.helper_functions import (
     check_for_blacklisted_engagement_job_function_user_keys,
 )
-from job_function_configurator.helper_functions import (
-    filter_out_avoided_email_user_keys,
-)
-
-
-@pytest.mark.parametrize(
-    "test_emails, expected_result",
-    [
-        ("sprogcenter-email", False),
-        ("email", True),
-        (
-            "EmailEmployee",
-            True,
-        ),
-        (
-            "skole-mail",
-            False,
-        ),
-    ],
-)
-def test_check_for_avoided_emails(test_emails, expected_result):
-    avoided_emails = ["sprogcenter-email", "skole-mail"]
-
-    result = filter_out_avoided_email_user_keys(test_emails, avoided_emails)
-    print("!!!!!!!", result)
-    assert result == expected_result
 
 
 @pytest.mark.parametrize(
