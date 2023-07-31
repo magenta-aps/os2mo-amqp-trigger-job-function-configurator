@@ -11,7 +11,7 @@ class JobFunctionSettings(FastRAMQPISettings):
     # HELPERS
     email_user_key_for_address_type: list = []
     address_type_scope: str
-    avoided_emails: list = []
+    avoided_email_user_keys: list = []
     blacklisted_keys: list = []
 
     # MUTATORS

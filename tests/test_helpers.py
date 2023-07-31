@@ -6,29 +6,30 @@ from job_function_configurator.helper_functions import (
     check_for_blacklisted_engagement_job_function_user_keys,
 )
 from job_function_configurator.helper_functions import (
-    check_for_email_not_in_avoided_list,
+    filter_out_avoided_email_user_keys,
 )
 
 
 @pytest.mark.parametrize(
     "test_emails, expected_result",
     [
-        ("forbudt@viborgskoler.dk", False),
-        ("somethingcool@gmail.com", True),
+        ("sprogcenter-email", False),
+        ("email", True),
         (
-            "smith@matrix.com",
+            "EmailEmployee",
             True,
         ),
         (
-            "neo@scviborg.dk",
+            "skole-mail",
             False,
         ),
     ],
 )
 def test_check_for_avoided_emails(test_emails, expected_result):
-    avoided_emails = ["viborgskoler.dk", "scviborg.dk"]
+    avoided_emails = ["sprogcenter-email", "skole-mail"]
 
-    result = check_for_email_not_in_avoided_list(test_emails, avoided_emails)
+    result = filter_out_avoided_email_user_keys(test_emails, avoided_emails)
+    print("!!!!!!!", result)
     assert result == expected_result
 
 
