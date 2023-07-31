@@ -10,9 +10,7 @@ from job_function_configurator.config import get_settings
 from job_function_configurator.helper_functions import (
     check_for_blacklisted_engagement_job_function_user_keys,
 )
-from job_function_configurator.helper_functions import (
-    check_for_email_not_in_avoided_list,
-)
+
 
 logger = structlog.get_logger(__name__)
 settings = get_settings()
@@ -81,6 +79,7 @@ async def process_engagement_events(
         return
 
     email = None
+    email_user_key = None
     primary_status = None
 
     try:
@@ -89,8 +88,9 @@ async def process_engagement_events(
             one(one(engagement_objects.employee).addresses).address_type.scope
             == settings.address_type_scope
         ):
-            # Get whether the engagement is primary or not, and retrieve the email.
+            # Get the engagements primary status, retrieve the email and the emails user key.
             email = one(one(engagement_objects.employee).addresses).name
+            email_user_key = one(one(engagement_objects.employee).addresses).user_key
             primary_status = engagement_objects.is_primary
 
     except ValueError as exc:
@@ -102,7 +102,7 @@ async def process_engagement_events(
     try:
         if email is not None:
             if (
-                check_for_email_not_in_avoided_list(email, settings.avoided_emails)
+                email_user_key not in settings.avoided_email_user_keys
                 and primary_status
             ):
                 new_job_function = engagement_objects.extension_2
