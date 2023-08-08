@@ -10,7 +10,7 @@ This integration has the sole responsibility of validating the contents of the `
 The integration listens on changes made to engagements in MO, which will trigger a chain of events. If the contents of
 the `job_function` field are of sensitive nature, or if it contains any information the user wants to filter out, we
 edit the field with any configured information, and send it back to MO to be displayed as the new `job_function`.
-------------------------------------------------------------------------------------------------------------------------
+
 ## Prerequisites
 You will need a functioning MO instance running on your host machine.
 
