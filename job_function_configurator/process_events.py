@@ -11,7 +11,6 @@ from job_function_configurator.helper_functions import (
     check_for_blacklisted_engagement_job_function_user_keys,
 )
 
-
 logger = structlog.get_logger(__name__)
 settings = get_settings()
 
@@ -47,10 +46,17 @@ async def process_engagement_events(
         logger.error("Engagement object not found, something went wrong:", exc.args[0])
         return
 
-    engagement_objects = one(engagement_object_parsed_as_model.objects).current
+    engagement_objects = None
+    try:
+        engagement_objects = one(engagement_object_parsed_as_model.objects).current
+    except ValueError as exc:
+        print(exc.args[0])
+        logger.error(
+            f"No engagement objects found for: {engagement_uuid}, found an error:",
+            exc.args[0],
+        )
 
     if not engagement_objects:
-        logger.debug(f"No current engagements found for: {engagement_uuid}.")
         return
 
     # Use the engagements current "from" date to avoid multiple entries in database.
