@@ -44,9 +44,7 @@ async def process_engagement_events(
         or engagement_object_parsed_as_model.objects is None
     ):
         # No objects were found in the GraphQL payload - might be a termination.
-        logger.info(
-            "Engagement objects are missing - ", engagement_object_parsed_as_model
-        )
+        logger.info("Engagement objects are missing")
         return
 
     engagement_objects = None
@@ -54,8 +52,7 @@ async def process_engagement_events(
         engagement_objects = one(engagement_object_parsed_as_model.objects).current
     except ValueError:
         logger.debug(
-            "No current engagement objects found - ",
-            engagement_objects,
+            "No current engagement objects found",
         )
 
     if not engagement_objects:
@@ -89,7 +86,7 @@ async def process_engagement_events(
     try:
         if one(engagement_objects.employee).addresses is None:
             logger.info(
-                "Person does not have an email address - ", engagement_objects.employee
+                "Person does not have an email address",
             )
             job_function_name_from_sd = engagement_objects.job_function.name
             await mo.update_extension_field(
@@ -104,8 +101,7 @@ async def process_engagement_events(
 
     except ValueError:
         logger.error(
-            "The person does not have a valid job function - ",
-            engagement_objects.job_function,
+            "The person does not have a valid job function",
         )
 
     try:
@@ -120,7 +116,7 @@ async def process_engagement_events(
             primary_status = engagement_objects.is_primary
 
     except ValueError:
-        logger.error("Missing objects in employee - ", engagement_objects.employee)
+        logger.error("Missing objects in employee")
 
     # If the engagement is primary and the email is not of avoided type,
     # then go ahead and use the contents of extension_2.
