@@ -53,7 +53,7 @@ async def process_engagement_events(
     try:
         engagement_objects = one(engagement_object_parsed_as_model.objects).current
     except ValueError:
-        logger.error(
+        logger.debug(
             "No current engagement objects found - ",
             engagement_objects,
         )
