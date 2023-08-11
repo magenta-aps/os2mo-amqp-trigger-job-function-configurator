@@ -31,29 +31,31 @@ async def process_engagement_events(
     Returns:
         A successful creation, or update, of an engagement or None
     """
-    print("LISTENING ON AN EVENT")
     logger.info(
         "Listening on a create/update/delete engagement event, with uuid of:",
         engagement_uuid=engagement_uuid,
     )
-    try:
-        engagement_object_parsed_as_model = await mo.get_engagement(
-            engagement_uuid, settings.email_user_key_for_address_type
-        )
+    engagement_object_parsed_as_model = await mo.get_engagement(
+        engagement_uuid, settings.email_user_key_for_address_type
+    )
 
-    except ValueError as exc:
-        print(exc.args[0])
-        logger.error("Engagement object not found, something went wrong:", exc.args[0])
+    if (
+        engagement_object_parsed_as_model
+        or engagement_object_parsed_as_model.objects is None
+    ):
+        # No objects were found in the GraphQL payload - might be a termination.
+        logger.info(
+            "Engagement objects are missing - ", engagement_object_parsed_as_model
+        )
         return
 
     engagement_objects = None
     try:
         engagement_objects = one(engagement_object_parsed_as_model.objects).current
-    except ValueError as exc:
-        print(exc.args[0])
+    except ValueError:
         logger.error(
-            f"No engagement objects found for: {engagement_uuid}, found an error:",
-            exc.args[0],
+            "No current engagement objects found - ",
+            engagement_objects,
         )
 
     if not engagement_objects:
@@ -62,31 +64,49 @@ async def process_engagement_events(
     # Use the engagements current "from" date to avoid multiple entries in database.
     update_from_date = engagement_objects.validity.from_
 
-    try:  # Check whether job functions codes are in blacklist.
-        job_function_user_key = engagement_objects.job_function.user_key
-        if check_for_blacklisted_engagement_job_function_user_keys(
-            job_function_user_key, settings.blacklisted_keys
-        ):
-            # Job function code is blacklisted. Write empty values.
-            await mo.update_extension_field(
-                engagement_uuid,
-                update_from_date,
-                settings.emtpy_content_for_extension_field_update,
-            )
-            print("FINISHED PROCESSING THE EVENT - WROTE EMPTY VALUES")
-            logger.info(
-                "An update with with empty values was successfully made to the new extension field."
-            )
-            return
+    # Check whether job functions codes are in blacklist.
+    job_function_user_key = engagement_objects.job_function.user_key
+    if check_for_blacklisted_engagement_job_function_user_keys(
+        job_function_user_key, settings.blacklisted_keys
+    ):
+        # Job function code is blacklisted. Write empty values.
+        await mo.update_extension_field(
+            engagement_uuid,
+            update_from_date,
+            settings.emtpy_content_for_extension_field_update,
+        )
 
-    except ValueError as exc:
-        print(exc.args[0])
-        logger.error("A mutation was not made, error occurred:", exc.args[0])
+        logger.info(
+            "An update with with empty values was successfully made to the new extension field."
+        )
         return
 
     email = None
     email_user_key = None
     primary_status = None
+
+    # Handle possibility of the person not having an email address.
+    try:
+        if one(engagement_objects.employee).addresses is None:
+            logger.info(
+                "Person does not have an email address - ", engagement_objects.employee
+            )
+            job_function_name_from_sd = engagement_objects.job_function.name
+            await mo.update_extension_field(
+                engagement_uuid, update_from_date, job_function_name_from_sd
+            )
+            # We should have passed the check for blacklisted job function codes (user keys)
+            # at this point.
+            logger.info(
+                "Made an update with the job function title from SD to"
+                " the new extension field."
+            )
+
+    except ValueError:
+        logger.error(
+            "The person does not have a valid job function - ",
+            engagement_objects.job_function,
+        )
 
     try:
         # Get addresses to check for email values.
@@ -99,42 +119,48 @@ async def process_engagement_events(
             email_user_key = one(one(engagement_objects.employee).addresses).user_key
             primary_status = engagement_objects.is_primary
 
-    except ValueError as exc:
-        print(exc.args[0])
-        logger.error("Missing objects in engagement:", exc.args[0])
+    except ValueError:
+        logger.error("Missing objects in employee - ", engagement_objects.employee)
 
     # If the engagement is primary and the email is not of avoided type,
     # then go ahead and use the contents of extension_2.
-    try:
-        if email is not None:
-            if (
-                email_user_key not in settings.avoided_email_user_keys
-                and primary_status
-            ):
-                new_job_function = engagement_objects.extension_2
-                # Make a mutation, write the contents of extension_2, to extension_x.
-                await mo.update_extension_field(
-                    engagement_uuid, update_from_date, new_job_function
-                )
-                print("FINISHED PROCESSING THE EVENT - WROTE FROM EXISTING EXTENSION")
-                logger.info(
-                    "An update with the contents of extension_2 was successfully made to"
-                    " the new extension field."
-                )
-                return
-            else:
-                # Make mutation, write what is the current job function name to the extension.
-                job_function_name_from_sd = engagement_objects.job_function.name
-                await mo.update_extension_field(
-                    engagement_uuid, update_from_date, job_function_name_from_sd
-                )
-                print("FINISHED PROCESSING THE EVENT - WROTE FROM SD")
-                logger.info(
-                    "An update with the job function from SD was successfully made to"
-                    " the new extension field."
-                )
-                return
-    except ValueError as exc:
-        print(exc.args[0])
-        logger.error("An update was not made, error occurred:", exc.args[0])
-        return
+
+    if email is not None:
+        if (  # If email is not blacklisted, and the engagement is the primary engagement
+            # and there is content in the extension_2 field.
+            email_user_key not in settings.avoided_email_user_keys
+            and primary_status
+            and engagement_objects.extension_2
+        ):
+            new_job_function = engagement_objects.extension_2
+            # Make a mutation, write the contents of extension_2, to extension_x.
+            await mo.update_extension_field(
+                engagement_uuid, update_from_date, new_job_function
+            )
+            logger.info(
+                "An update with the contents of extension_2 was successfully made to"
+                " the new extension field."
+            )
+            return
+        else:
+            # Make mutation, write what is the current job function name to the extension.
+            job_function_name_from_sd = engagement_objects.job_function.name
+            await mo.update_extension_field(
+                engagement_uuid, update_from_date, job_function_name_from_sd
+            )
+            logger.info(
+                "An update with the job function from SD was successfully made to"
+                " the new extension field."
+            )
+            return
+    else:
+        # There is no email, and/or the extension_2 field is empty - write the
+        # job functions name to the new extension.
+        job_function_name_from_sd = engagement_objects.job_function.name
+        await mo.update_extension_field(
+            engagement_uuid, update_from_date, job_function_name_from_sd
+        )
+        logger.info(
+            "An update with the job function from SD was successfully made to"
+            " the new extension field."
+        )
