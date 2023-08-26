@@ -201,14 +201,14 @@ python-versions = "*"
 
 [[package]]
 name = "fastapi"
-version = "0.100.1"
+version = "0.102.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-pydantic = ">=1.7.4,<1.8 || >1.8,<1.8.1 || >1.8.1,<2.0.0 || >2.0.0,<2.0.1 || >2.0.1,<3.0.0"
+pydantic = ">=1.7.4,<1.8 || >1.8,<1.8.1 || >1.8.1,<2.0.0 || >2.0.0,<2.0.1 || >2.0.1,<2.1.0 || >2.1.0,<3.0.0"
 starlette = ">=0.27.0,<0.28.0"
 typing-extensions = ">=4.5.0"
 
@@ -217,14 +217,14 @@ all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)"
 
 [[package]]
 name = "fastramqpi"
-version = "1.5.3"
+version = "1.5.5"
 description = "Rammearkitektur AMQP framework (FastAPI + RAMQP)"
 category = "main"
 optional = false
 python-versions = ">=3.10,<4.0"
 
 [package.dependencies]
-fastapi = ">=0.93,<1.0"
+fastapi = ">=0.101,<1.0"
 gql = ">=3.4.0,<4.0.0"
 more-itertools = ">=9.1.0,<10.0.0"
 prometheus-fastapi-instrumentator = ">=5.9.1,<7.0.0"
@@ -1001,7 +1001,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "41f0d782a86d3c8b18f319ea4dd074646c87d1f570af827cb9db82b580d3be0d"
+content-hash = "ce9ce99cb197fa98b02b2cb590b50c71bffb414405eaaaf24ceace2b00a3fb98"
 
 [metadata.files]
 aio-pika = [
@@ -1230,12 +1230,12 @@ distlib = [
     {file = "distlib-0.3.7.tar.gz", hash = "sha256:9dafe54b34a028eafd95039d5e5d4851a13734540f1331060d31c9916e7147a8"},
 ]
 fastapi = [
-    {file = "fastapi-0.100.1-py3-none-any.whl", hash = "sha256:ec6dd52bfc4eff3063cfcd0713b43c87640fefb2687bbbe3d8a08d94049cdf32"},
-    {file = "fastapi-0.100.1.tar.gz", hash = "sha256:522700d7a469e4a973d92321ab93312448fbe20fca9c8da97effc7e7bc56df23"},
+    {file = "fastapi-0.102.0-py3-none-any.whl", hash = "sha256:34db27d0af54ee0d92c540e83c6ee6a11de93f63bbdf73fda54fff9a10c52569"},
+    {file = "fastapi-0.102.0.tar.gz", hash = "sha256:e3652cb9bdf4df1dedda4fce9454e9f75a8c969b5cdd3faf1bd5c6f5d2daab08"},
 ]
 fastramqpi = [
-    {file = "fastramqpi-1.5.3-py3-none-any.whl", hash = "sha256:d1cb6045e16a12f9471212913d5a9865be55fe7215679f95e976ce2878d80a0d"},
-    {file = "fastramqpi-1.5.3.tar.gz", hash = "sha256:d16babc8716f98bec327296f4bde88ab774339241090b64fd0766140f7440c34"},
+    {file = "fastramqpi-1.5.5-py3-none-any.whl", hash = "sha256:6c5a69555c9c25894dd07cafcdcc06b2ba5cedbae1de8419710b925c2484e2ba"},
+    {file = "fastramqpi-1.5.5.tar.gz", hash = "sha256:1987568e0c754683f8ed7d19d08e5b94f338b9dfd2d686b5a3a250a408317dfa"},
 ]
 filelock = [
     {file = "filelock-3.12.2-py3-none-any.whl", hash = "sha256:cbb791cdea2a72f23da6ac5b5269ab0a0d161e9ef0100e653b69049a7706d1ec"},
