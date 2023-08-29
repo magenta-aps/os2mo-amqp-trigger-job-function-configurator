@@ -40,9 +40,9 @@ query GetEngagement($engagement_uuids: UUID!, $email_user_keys: [String!]) {
 }
 
 
-mutation UpdateExtensionField($uuid: UUID!, $from_date: DateTime!, $extension_3: String) {
+mutation UpdateExtensionField($uuid: UUID!, $from_date: DateTime!, $to_date: DateTime, $extension_3: String) {
   engagement_update(
-    input: {uuid: $uuid, validity: {from: $from_date}, extension_3: $extension_3}
+    input: {uuid: $uuid, validity: {from: $from_date, to: $to_date}, extension_3: $extension_3}
   ) {
     uuid
   }
