@@ -15,7 +15,7 @@ services:
     volumes:
       - ./job_function_configurator:/app/job_function_configurator
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
 
 networks:
   os2mo_default:
