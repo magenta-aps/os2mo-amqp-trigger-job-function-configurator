@@ -149,7 +149,7 @@ async def process_engagement_events(
         )
         return
 
-    elif email is None:
+    if email is None:
         # There is no email, and/or the extension_2 field is empty - write the
         # job functions name to the new extension.
         job_function_name_from_sd = engagement_objects.job_function.name
