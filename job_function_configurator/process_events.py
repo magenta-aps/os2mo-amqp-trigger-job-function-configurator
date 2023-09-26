@@ -59,24 +59,6 @@ async def process_engagement_events(
     update_from_date = engagement_objects.validity.from_
     update_to_date = engagement_objects.validity.to
 
-    # Check whether job functions codes are in blacklist.
-    job_function_user_key = engagement_objects.job_function.user_key
-    if check_for_blacklisted_engagement_job_function_user_keys(
-        job_function_user_key, settings.blacklisted_keys
-    ):
-        # Job function code is blacklisted. Write empty values.
-        await mo.update_extension_field(
-            engagement_uuid,
-            update_from_date,
-            update_to_date,
-            settings.emtpy_content_for_extension_field_update,
-        )
-
-        logger.info(
-            "An update with with empty values was successfully made to the new extension field."
-        )
-        return
-
     email = None
     email_user_key = None
     primary_status = None
@@ -148,7 +130,26 @@ async def process_engagement_events(
                 " the new extension field."
             )
             return
-    else:
+
+    # Check whether job functions codes are in blacklist.
+    job_function_user_key = engagement_objects.job_function.user_key
+    if check_for_blacklisted_engagement_job_function_user_keys(
+        job_function_user_key, settings.blacklisted_keys
+    ):
+        # Job function code is blacklisted. Write empty values.
+        await mo.update_extension_field(
+            engagement_uuid,
+            update_from_date,
+            update_to_date,
+            settings.emtpy_content_for_extension_field_update,
+        )
+
+        logger.info(
+            "An update with with empty values was successfully made to the new extension field."
+        )
+        return
+
+    if email is None:
         # There is no email, and/or the extension_2 field is empty - write the
         # job functions name to the new extension.
         job_function_name_from_sd = engagement_objects.job_function.name
