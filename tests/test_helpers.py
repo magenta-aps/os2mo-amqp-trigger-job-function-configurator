@@ -2,9 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 import pytest
 
-from job_function_configurator.helper_functions import (
-    check_for_blacklisted_engagement_job_function_user_keys,
-)
+from job_function_configurator.process_events import check_for_blacklisted_engagement_job_function_user_keys
 
 
 @pytest.mark.parametrize(
