@@ -15,7 +15,7 @@ class JobFunctionSettings(FastRAMQPISettings):
     blacklisted_keys: list = []
 
     # MUTATORS
-    emtpy_content_for_extension_field_update: str = " "
+    empty_content_for_extension_field_update: str = " "
 
     class Config:
         """Settings are frozen."""

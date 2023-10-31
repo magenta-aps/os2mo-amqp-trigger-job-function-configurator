@@ -141,7 +141,7 @@ async def process_engagement_events(
             engagement_uuid,
             update_from_date,
             update_to_date,
-            settings.emtpy_content_for_extension_field_update,
+            settings.empty_content_for_extension_field_update,
         )
 
         logger.info(
