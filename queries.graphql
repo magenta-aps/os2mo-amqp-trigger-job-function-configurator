@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 query GetEngagement($engagement_uuids: UUID!, $email_user_keys: [String!]) {
-  engagements(uuids: [$engagement_uuids]) {
+  engagements(filter: {uuids: [$engagement_uuids]}) {
     objects {
       current {
         validity {
@@ -21,9 +21,9 @@ query GetEngagement($engagement_uuids: UUID!, $email_user_keys: [String!]) {
           user_key
           uuid
         }
-        employee {
+        employee: person {
           uuid
-          addresses(address_type_user_keys: $email_user_keys) {
+          addresses(filter: {address_type_user_keys: $email_user_keys}) {
             name
             user_key
             address_type {
@@ -38,7 +38,6 @@ query GetEngagement($engagement_uuids: UUID!, $email_user_keys: [String!]) {
     }
   }
 }
-
 
 mutation UpdateExtensionField($uuid: UUID!, $from_date: DateTime!, $to_date: DateTime, $extension_3: String) {
   engagement_update(
