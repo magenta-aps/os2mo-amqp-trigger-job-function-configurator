@@ -81,7 +81,7 @@ async def process_engagement_events(
 
     # Handle possibility of the person not having an email address.
     try:
-        if one(engagement_objects.employee).addresses is None:
+        if one(engagement_objects.person).addresses is None:
             logger.info(
                 "Person does not have an email address",
             )
@@ -104,16 +104,16 @@ async def process_engagement_events(
     try:
         # Get addresses to check for email values.
         if (
-            one(one(engagement_objects.employee).addresses).address_type.scope
+            one(one(engagement_objects.person).addresses).address_type.scope
             == settings.address_type_scope
         ):
             # Get the engagements primary status, retrieve the email and the emails user key.
-            email = one(one(engagement_objects.employee).addresses).name
-            email_user_key = one(one(engagement_objects.employee).addresses).user_key
+            email = one(one(engagement_objects.person).addresses).name
+            email_user_key = one(one(engagement_objects.person).addresses).user_key
             primary_status = engagement_objects.is_primary
 
     except ValueError:
-        logger.error("Missing objects in employee")
+        logger.error("Missing objects in person")
 
     # If the engagement is primary and the email is not of avoided type,
     # then go ahead and use the contents of extension_2.

@@ -21,7 +21,7 @@ query GetEngagement($engagement_uuids: UUID!, $email_user_keys: [String!]) {
           user_key
           uuid
         }
-        employee: person {
+        person {
           uuid
           addresses(filter: {address_type_user_keys: $email_user_keys}) {
             name
