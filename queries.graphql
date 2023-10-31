@@ -1,6 +1,17 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-query GetEngagement($engagement_uuid: UUID!, $email_user_keys: [String!]) {
+query GetItsystemUuid($itsystem_user_key: String!) {
+  itsystems(filter: {user_keys: [$itsystem_user_key]}) {
+    objects {
+      current {
+        uuid
+        user_key
+      }
+    }
+  }
+}
+
+query GetEngagement($engagement_uuid: UUID!, $itsystem_uuid: UUID!) {
   engagements(filter: {uuids: [$engagement_uuid]}) {
     objects {
       current {
@@ -8,36 +19,27 @@ query GetEngagement($engagement_uuid: UUID!, $email_user_keys: [String!]) {
           from
           to
         }
+
+        # Contains the AD job description
         extension_2
+        # Contains the output of this integration
         extension_3
+
         is_primary
         job_function {
           name
           user_key
-          uuid
-        }
-        primary {
-          name
-          user_key
-          uuid
         }
         person {
-          uuid
-          addresses(filter: {address_type_user_keys: $email_user_keys}) {
-            name
+          itusers(filter: {itsystem_uuids: [$itsystem_uuid]}) {
             user_key
-            address_type {
-              scope
-              user_key
-              name
-            }
           }
         }
       }
-      uuid
     }
   }
 }
+
 
 mutation UpdateExtensionField($uuid: UUID!, $from_date: DateTime!, $to_date: DateTime, $extension_3: String) {
   engagement_update(

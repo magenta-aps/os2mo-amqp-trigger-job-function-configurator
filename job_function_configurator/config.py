@@ -11,10 +11,7 @@ class JobFunctionSettings(FastRAMQPISettings):
 
     mo_graphql_version: PositiveInt = 19
 
-    # HELPERS
-    email_user_key_for_address_type: list = []
-    address_type_scope: str
-    avoided_email_user_keys: list = []
+    itsystem_user_key: str = "Active Directory"
     blacklisted_keys: list = []
 
     # MUTATORS
