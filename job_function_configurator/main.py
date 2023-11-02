@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 import structlog
+from structlog.contextvars import bound_contextvars
 from fastapi import APIRouter
 from fastapi import FastAPI
 from fastramqpi.main import FastRAMQPI
@@ -33,14 +34,12 @@ async def listener(
     engagement_uuid - UUID of the engagement.
 
     Args:
-    gql_client: A GraphQL client to perform the various queries
-
-    engagement_uuid: UUID of the engagement
-
-    Returns:
-        A successful creation, or update, of an engagement or None
+        engagement_uuid: UUID of the engagement
+        mo: A GraphQL client to perform the various queries
+        _: A dependency injected rate limiter
     """
-    await process_engagement_events(mo, engagement_uuid)
+    with bound_contextvars(engagement_uuid=engagement_uuid):
+        await process_engagement_events(mo, engagement_uuid)
 
 
 def create_fastramqpi(**kwargs) -> FastRAMQPI:

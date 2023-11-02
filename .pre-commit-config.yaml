@@ -1,8 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-default_language_version:
-  python: python3.11
-
 repos:
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.8.0
