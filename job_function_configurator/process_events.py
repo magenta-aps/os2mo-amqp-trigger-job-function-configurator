@@ -26,12 +26,8 @@ async def process_engagement_events(mo: GraphQLClient, engagement_uuid: UUID) ->
     """
     logger.info("Processing an engagement event")
 
-    # TODO: Remove this code, by implementing support for ituser filtering by itsystem user key in MO
-    itsystem_uuid_response = await mo.get_itsystem_uuid(settings.itsystem_user_key)
-    itsystem_uuid = one(itsystem_uuid_response.objects).current.uuid
-
     engagement_object_response = await mo.get_engagement(
-        engagement_uuid, itsystem_uuid
+        engagement_uuid, settings.itsystem_user_key
     )
     # As we lookup by UUID we expect at most 1 result
     engagement_object = only(engagement_object_response.objects)
