@@ -691,7 +691,7 @@ pyyaml = "*"
 
 [[package]]
 name = "pytest"
-version = "7.4.0"
+version = "7.4.3"
 description = "pytest: simple powerful testing with Python"
 category = "main"
 optional = false
@@ -1029,7 +1029,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "77ac4c7117de74091e6e225d5d3d8e577a7831dcc4faaf03eef3f3dd0d8ca664"
+content-hash = "2e9b97edd93cc80ca5c46f871257e49e4e9920a146ffdfd00b4d52a5aafab7b2"
 
 [metadata.files]
 aio-pika = [
@@ -1578,8 +1578,8 @@ pymdown-extensions = [
     {file = "pymdown_extensions-10.1.tar.gz", hash = "sha256:508009b211373058debb8247e168de4cbcb91b1bff7b5e961b2c3e864e00b195"},
 ]
 pytest = [
-    {file = "pytest-7.4.0-py3-none-any.whl", hash = "sha256:78bf16451a2eb8c7a2ea98e32dc119fd2aa758f1d5d66dbf0a59d69a3969df32"},
-    {file = "pytest-7.4.0.tar.gz", hash = "sha256:b4bf8c45bd59934ed84001ad51e11b4ee40d40a1229d2c79f9c592b0a3f6bd8a"},
+    {file = "pytest-7.4.3-py3-none-any.whl", hash = "sha256:0d009c083ea859a71b76adf7c1d502e4bc170b80a8ef002da5806527b9591fac"},
+    {file = "pytest-7.4.3.tar.gz", hash = "sha256:d989d136982de4e3b29dabcc838ad581c64e8ed52c11fbe86ddebd9da0818cd5"},
 ]
 pytest-asyncio = [
     {file = "pytest-asyncio-0.21.1.tar.gz", hash = "sha256:40a7eae6dded22c7b604986855ea48400ab15b069ae38116e8c01238e9eeb64d"},
