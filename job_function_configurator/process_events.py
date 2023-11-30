@@ -64,8 +64,8 @@ async def process_engagement_events(mo: GraphQLClient, engagement_uuid: UUID) ->
     logger.info("Found job function source", source=source, has_ituser=has_ituser, is_primary=is_primary, job_function_blacklisted=job_function_blacklisted)
 
     if new_job_function is None:
-        logger.warn("The desired job function is None")
-        return
+        logger.info("The desired job function is None, clearing the field")
+        new_job_function = settings.empty_content_for_extension_field_update
 
     if engagement.extension_3 == new_job_function:
         logger.info("Engagement already has the desire job function")
