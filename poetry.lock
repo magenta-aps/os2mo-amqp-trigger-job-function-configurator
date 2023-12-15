@@ -1003,7 +1003,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "uvicorn"
-version = "0.23.1"
+version = "0.24.0.post1"
 description = "The lightning-fast ASGI server."
 category = "main"
 optional = false
@@ -1068,7 +1068,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6a4652b9e7ac9a3f40491dc696718e56727b8146fae49ac4812a39565ad36e3c"
+content-hash = "a629fea7c5db25bd98b98f07a622a97da153468ce3a26ab50fde7ce1cb3dfdb0"
 
 [metadata.files]
 aio-pika = [
@@ -1757,8 +1757,8 @@ typing-extensions = [
     {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
 ]
 uvicorn = [
-    {file = "uvicorn-0.23.1-py3-none-any.whl", hash = "sha256:1d55d46b83ee4ce82b4e82f621f2050adb3eb7b5481c13f9af1744951cae2f1f"},
-    {file = "uvicorn-0.23.1.tar.gz", hash = "sha256:da9b0c8443b2d7ee9db00a345f1eee6db7317432c9d4400f5049cc8d358383be"},
+    {file = "uvicorn-0.24.0.post1-py3-none-any.whl", hash = "sha256:7c84fea70c619d4a710153482c0d230929af7bcf76c7bfa6de151f0a3a80121e"},
+    {file = "uvicorn-0.24.0.post1.tar.gz", hash = "sha256:09c8e5a79dc466bdf28dead50093957db184de356fcdc48697bad3bde4c2588e"},
 ]
 virtualenv = [
     {file = "virtualenv-20.24.2-py3-none-any.whl", hash = "sha256:43a3052be36080548bdee0b42919c88072037d50d56c28bd3f853cbe92b953ff"},
