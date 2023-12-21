@@ -48,7 +48,7 @@ async def process_engagement_events(mo: GraphQLClient, engagement_uuid: UUID) ->
     has_ituser = bool(person.itusers)
 
     is_primary = engagement.is_primary
-    has_extension2 = engagement.extension_2
+    has_extension2 = bool(engagement.extension_2)
 
     job_function_blacklisted = engagement.job_function.user_key in settings.blacklisted_keys
 
