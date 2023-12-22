@@ -48,11 +48,12 @@ async def process_engagement_events(mo: GraphQLClient, engagement_uuid: UUID) ->
     has_ituser = bool(person.itusers)
 
     is_primary = engagement.is_primary
+    has_extension2 = bool(engagement.extension_2)
 
     job_function_blacklisted = engagement.job_function.user_key in settings.blacklisted_keys
 
     logger.info(f"ITUser was{'' if has_ituser else ' not'} found")
-    if is_primary and has_ituser:
+    if is_primary and has_ituser and has_extension2:
         new_job_function = engagement.extension_2
         source = "extension_2"
     elif job_function_blacklisted:
@@ -61,7 +62,14 @@ async def process_engagement_events(mo: GraphQLClient, engagement_uuid: UUID) ->
     else:
         new_job_function = engagement.job_function.name
         source = "job-function"
-    logger.info("Found job function source", source=source, has_ituser=has_ituser, is_primary=is_primary, job_function_blacklisted=job_function_blacklisted)
+    logger.info(
+        "Found job function source",
+        source=source,
+        has_ituser=has_ituser,
+        is_primary=is_primary,
+        has_extension2=has_extension2,
+        job_function_blacklisted=job_function_blacklisted,
+    )
 
     if new_job_function is None:
         logger.info("The desired job function is None, clearing the field")
