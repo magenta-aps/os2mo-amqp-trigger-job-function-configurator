@@ -1,17 +1,6 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-query GetItsystemUuid($itsystem_user_key: String!) {
-  itsystems(filter: {user_keys: [$itsystem_user_key]}) {
-    objects {
-      current {
-        uuid
-        user_key
-      }
-    }
-  }
-}
-
-query GetEngagement($engagement_uuid: UUID!, $itsystem_uuid: UUID!) {
+query GetEngagement($engagement_uuid: UUID!, $itsystem_user_key: String!) {
   engagements(filter: {uuids: [$engagement_uuid]}) {
     objects {
       current {
@@ -31,7 +20,7 @@ query GetEngagement($engagement_uuid: UUID!, $itsystem_uuid: UUID!) {
           user_key
         }
         person {
-          itusers(filter: {itsystem_uuids: [$itsystem_uuid]}) {
+          itusers(filter: {itsystem: {user_keys: [$itsystem_user_key]}}) {
             user_key
           }
         }
