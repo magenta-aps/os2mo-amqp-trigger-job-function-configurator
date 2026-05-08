@@ -9,7 +9,7 @@ class JobFunctionSettings(FastRAMQPISettings):
 
     log_level: str = "INFO"
 
-    mo_graphql_version: PositiveInt = 20
+    mo_graphql_version: PositiveInt = 21
 
     itsystem_user_key: str = "Active Directory"
     blacklisted_keys: list = []

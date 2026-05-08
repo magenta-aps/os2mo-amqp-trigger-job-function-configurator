@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 #
-# OS2mo GraphQL API schema definition (v20).
-# https://os2mo.eksempel.dk/graphql/v20/schema.graphql
+# OS2mo GraphQL API schema definition (v21).
+# https://os2mo.eksempel.dk/graphql/v21/schema.graphql
 
 "Address information for either an employee or organisational unit\n"
 type Address {
