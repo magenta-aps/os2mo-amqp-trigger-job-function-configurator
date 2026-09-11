@@ -3,13 +3,18 @@
 
 OS2mo-amqp-trigger-job-function-configurator
 =====================================================================================
-This is an OS2mo AMQP trigger receiver that allows for configuration of job functions
+This is an OS2mo integration that allows for configuration of job functions
 
 This integration has the sole responsibility of maintaining and writing the contents of the `extension_3` field in MO.
 
 The integration listens on changes made to engagements in MO, which will trigger a chain of events. If the contents of
 the `job_function` field are of sensitive nature, or if it contains any information the user wants to filter out, we
 edit the field with any configured information, and send it back to MO to be displayed as the new `job_function`.
+
+## Events
+The integration uses the GraphQL event system in MO. On startup it declares an
+event listener in MO, and MO then delivers engagement events as HTTP POSTs to
+`/events/mo/engagement`.
 
 ## Prerequisites
 You will need a functioning MO instance running on your host machine.
