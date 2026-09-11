@@ -5,7 +5,7 @@ from pydantic import PositiveInt
 
 
 class JobFunctionSettings(FastRAMQPISettings):
-    """Settings for the engagement elevator AMQP trigger."""
+    """Settings for the job function configurator."""
 
     log_level: str = "INFO"
 
