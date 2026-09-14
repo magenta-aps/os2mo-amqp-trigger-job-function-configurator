@@ -24,16 +24,26 @@ To run this integration firstly you will need to pull the project from the upstr
 `docker compose up -d` to start the integration.
 
 ## Custom configurations
-Currently, we may configure following settings:
-- `email_user_key_for_address_type` - A list of address type user keys used to find address types for, i.e. "EmailEmployee".
-- `address_type_scope` - Scope on address types to search for, i.e "EMAIL".
-- `avoided_email_user_keys` - A list of email user keys used to exclude when writing to the new extension field.
-- `blacklisted_keys` - A list of job function user keys to exclude when writing to the new extension field.
-- `emtpy_content_for_extension_field_update` - Empty content to write to the new extension field.
+The integration is configured through environment variables.
+
+The connection to MO is configured through FastRAMQPI, whose settings are nested under `fastramqpi`:
+- `FASTRAMQPI__MO_URL` - Base URL of the MO instance to integrate with.
+- `FASTRAMQPI__CLIENT_ID` - Client ID to authenticate with.
+- `FASTRAMQPI__CLIENT_SECRET` - Client secret to authenticate with.
+- `FASTRAMQPI__AUTH_SERVER` - Base URL of the Keycloak to authenticate against.
+- `FASTRAMQPI__LOG_LEVEL` - Log level to configure.
+
+The integration's own settings are:
+- `BLACKLISTED_KEYS` - A list of job function user keys to exclude when writing to the new extension field.
+- `EMPTY_CONTENT_FOR_EXTENSION_FIELD_UPDATE` - Empty content to write to the new extension field.
+- `ITSYSTEM_USER_KEY` - User key of the IT system to look for the employee's IT user in, i.e. "Active Directory".
 
 ## Tests
-Tests can be run by the following command:
-`poetry run pytest tests/`. This will run all tests in the `tests/` directory.
+The unit tests are in `tests/`, and the integration tests are in `tests/integration/`. The integration tests are run
+against a real MO instance, so you will need the MO stack (https://github.com/OS2mo/os2mo) running before you run them.
 
-If needed, you may run the tests as more verbose by: `poetry run pytest tests/ --verbose`. This will output which tests
-are run, and may prove to be more useful in case of failing tests.
+Tests are run in the integration's own container:
+- `docker compose run --rm configurator pytest` runs all tests
+- `docker compose run --rm configurator pytest -m 'not integration_test'` runs only the unit tests, which do not need
+  MO to be running
+- `docker compose run --rm configurator pytest tests/integration` runs only the integration tests
