@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-version: "3.9"
 services:
   configurator:
     build:
@@ -9,13 +8,28 @@ services:
     env_file:
       - docker.env
     environment:
-      LOG_LEVEL: DEBUG
+      FASTRAMQPI__LOG_LEVEL: DEBUG
+    depends_on:
+      - db
     networks:
       - os2mo_default
+      - default
     volumes:
-      - ./job_function_configurator:/app/job_function_configurator
+      # Mount the whole repository, so the tests can be run in the container
+      # without rebuilding the image every time
+      - ./:/app/:ro
+      - ./.pytest_cache/:/app/.pytest_cache/
     ports:
       - "127.0.0.1:8000:8000"
+
+  # The integration does not use a database, but FastRAMQPI's test fixtures
+  # create one database per integration test to isolate them from each other
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: "fastramqpi"
+      POSTGRES_PASSWORD: "fastramqpi"
+      POSTGRES_DB: "fastramqpi"
 
 networks:
   os2mo_default:
