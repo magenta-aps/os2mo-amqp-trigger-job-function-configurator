@@ -1,5 +1,7 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
+# Everything we need to decide the contents of extension_3, and everything we
+# need to write the engagement back unchanged apart from that.
 query GetEngagement($engagement_uuid: UUID!, $itsystem_user_key: String!) {
   engagements(filter: {uuids: [$engagement_uuid]}) {
     objects {
@@ -9,17 +11,37 @@ query GetEngagement($engagement_uuid: UUID!, $itsystem_user_key: String!) {
           to
         }
 
+        user_key
+        extension_1
         # Contains the AD job description
         extension_2
         # Contains the output of this integration
         extension_3
+        extension_4
+        extension_5
+        extension_6
+        extension_7
+        extension_8
+        extension_9
+        extension_10
 
         is_primary
+        primary {
+          uuid
+        }
         job_function {
+          uuid
           name
           user_key
         }
+        engagement_type {
+          uuid
+        }
+        org_unit {
+          uuid
+        }
         person {
+          uuid
           itusers(filter: {itsystem: {user_keys: [$itsystem_user_key]}}) {
             user_key
           }
@@ -30,10 +52,104 @@ query GetEngagement($engagement_uuid: UUID!, $itsystem_user_key: String!) {
 }
 
 
-mutation UpdateExtensionField($uuid: UUID!, $from_date: DateTime!, $to_date: DateTime, $extension_3: String) {
-  engagement_update(
-    input: {uuid: $uuid, validity: {from: $from_date, to: $to_date}, extension_3: $extension_3}
-  ) {
+mutation UpdateEngagement($input: EngagementUpdateInput!) {
+  engagement_update(input: $input) {
     uuid
+  }
+}
+
+
+# The mutations below are only used to set up state for the integration tests.
+mutation _Testing_CreateFacet($input: FacetCreateInput!) {
+  facet_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_CreateClass($input: ClassCreateInput!) {
+  class_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_CreateEmployee($input: EmployeeCreateInput!) {
+  employee_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_CreateOrgUnit($input: OrganisationUnitCreateInput!) {
+  org_unit_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_CreateEngagement($input: EngagementCreateInput!) {
+  engagement_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_CreateItSystem($input: ITSystemCreateInput!) {
+  itsystem_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_CreateItUser($input: ITUserCreateInput!) {
+  ituser_create(input: $input) {
+    uuid
+  }
+}
+
+mutation _Testing_UpdateEngagement($input: EngagementUpdateInput!) {
+  engagement_update(input: $input) {
+    uuid
+  }
+}
+
+# Every field of every validity period, so the tests can assert that the
+# integration changes nothing but `extension_3` of the current period.
+query _Testing_GetEngagementTimeline($engagement_uuid: UUID!) {
+  engagements(
+    filter: {uuids: [$engagement_uuid], from_date: null, to_date: null}
+  ) {
+    objects {
+      objects {
+        uuid
+        user_key
+        validity {
+          from
+          to
+        }
+        extension_1
+        extension_2
+        extension_3
+        extension_4
+        extension_5
+        extension_6
+        extension_7
+        extension_8
+        extension_9
+        extension_10
+        fraction
+        is_primary
+        primary {
+          uuid
+        }
+        job_function {
+          uuid
+        }
+        engagement_type {
+          uuid
+        }
+        person {
+          uuid
+        }
+        org_unit {
+          uuid
+        }
+      }
+    }
   }
 }
