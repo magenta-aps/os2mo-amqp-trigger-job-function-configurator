@@ -1,7 +1,2 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-.idea
-**/*__pycache__
-.cache
-.mypy_cache
-.pytest_cache

@@ -47,11 +47,40 @@ workflow:
 
 
 include:
+  - project: rammearkitektur/os2mo
+    file:
+    - gitlab-ci-templates/integration-test-meta.v1.yml
   - project: labs/salt-automation
     file:
+    - gitlab-ci-templates/common/rules.v1.yml
     - gitlab-ci-templates/common/config-updater-salt.v1.yml
     - gitlab-ci-templates/common/conventional-commits.v1.yml
     - gitlab-ci-templates/common/docker-build.v1.yml
     - gitlab-ci-templates/common/docker-release.v1.yml
     - gitlab-ci-templates/common/pre-commit.v1.yml
-    - gitlab-ci-templates/python/pytest.v1.yml
+# Currently there are no unit test, but if they are added, this section will
+# be needed:
+
+#  - project: labs/salt-automation
+#    file:
+#      - /gitlab-ci-templates/python/pytest.v1.yml
+#    inputs:
+#      pytest_addopts: "-m 'not integration_test'"
+#    rules:
+#      - <<: *if-merge-request
+
+Integration-test:
+  extends:
+    - .integration-test:mo
+  variables:
+    PYTEST_ADDOPTS: "-m 'integration_test'"
+    # The app is stateless; reuse MOs own Postgres (`mox-db`) for the FastRAMQPI
+    # integration-test fixtures instead of a dedicated database. The template
+    # defaults these to a `db:54321` that does not exist among its services.
+    FASTRAMQPI__DATABASE__USER: "mox"
+    FASTRAMQPI__DATABASE__PASSWORD: "mox"
+    FASTRAMQPI__DATABASE__HOST: "mox-db"
+    FASTRAMQPI__DATABASE__PORT: "5432"
+    FASTRAMQPI__DATABASE__NAME: "mox"
+  rules:
+    - <<: *if-merge-request

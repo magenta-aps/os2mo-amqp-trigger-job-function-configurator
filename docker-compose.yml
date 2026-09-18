@@ -1,21 +1,52 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
-version: "3.9"
 services:
   configurator:
     build:
       context: .
     command: ["uvicorn", "--factory", "job_function_configurator.main:create_app", "--host", "0.0.0.0", "--reload"]
-    env_file:
-      - docker.env
     environment:
-      LOG_LEVEL: DEBUG
+      FASTRAMQPI__LOG_LEVEL: DEBUG
+      FASTRAMQPI__MO_URL: "http://mo:5000"
+
+      FASTRAMQPI__AUTH_SERVER: "http://keycloak:8080/auth"
+      FASTRAMQPI__CLIENT_ID: "dipex"
+      FASTRAMQPI__CLIENT_SECRET: "603f1c82-d012-4d04-9382-dbe659c533fb"
+
+      # The integration itself uses neither AMQP nor a database, but
+      # FastRAMQPI's test fixtures need both to isolate the integration tests
+      # from each other. Do not set these in production: FastRAMQPI connects to
+      # the message broker whenever AMQP is configured, even though nothing
+      # consumes from it.
+      FASTRAMQPI__AMQP__URL: "amqp://guest:guest@msg-broker:5672/"
+      FASTRAMQPI__DATABASE__USER: "fastramqpi"
+      FASTRAMQPI__DATABASE__PASSWORD: "fastramqpi"
+      FASTRAMQPI__DATABASE__HOST: "db"
+      FASTRAMQPI__DATABASE__NAME: "fastramqpi"
+
+      # Customer specific envs
+      BLACKLISTED_KEYS: '["1550", "1551", "1552", "1553", "1554", "1555", "1556", "1557", "1558", "1559", "3000"]'
+    depends_on:
+      - db
     networks:
       - os2mo_default
+      - default
     volumes:
-      - ./job_function_configurator:/app/job_function_configurator
+      # Mount the whole repository, so the tests can be run in the container
+      # without rebuilding the image every time
+      - ./:/app/:ro
+      - ./.pytest_cache/:/app/.pytest_cache/
     ports:
       - "127.0.0.1:8000:8000"
+
+  # The integration does not use a database, but FastRAMQPI's test fixtures
+  # create one database per integration test to isolate them from each other
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: "fastramqpi"
+      POSTGRES_PASSWORD: "fastramqpi"
+      POSTGRES_DB: "fastramqpi"
 
 networks:
   os2mo_default:

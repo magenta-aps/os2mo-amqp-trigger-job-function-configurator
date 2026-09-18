@@ -1,15 +1,16 @@
 # SPDX-FileCopyrightText: 2023 Magenta ApS <https://magenta.dk>
 # SPDX-License-Identifier: MPL-2.0
 from fastramqpi.config import Settings as FastRAMQPISettings
-from pydantic import PositiveInt
+from pydantic import BaseSettings
 
 
-class JobFunctionSettings(FastRAMQPISettings):
-    """Settings for the engagement elevator AMQP trigger."""
+class JobFunctionSettings(BaseSettings):
+    """Settings for the job function configurator."""
 
-    log_level: str = "INFO"
-
-    mo_graphql_version: PositiveInt = 21
+    # The settings FastRAMQPI needs, such as the OS2mo URL and the client
+    # credentials. They are read from FASTRAMQPI__-prefixed environment
+    # variables, i.e. FASTRAMQPI__MO_URL.
+    fastramqpi: FastRAMQPISettings
 
     itsystem_user_key: str = "Active Directory"
     blacklisted_keys: list = []
