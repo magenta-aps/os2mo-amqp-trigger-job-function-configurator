@@ -4,6 +4,7 @@ from collections.abc import AsyncIterator
 from collections.abc import Awaitable
 from collections.abc import Callable
 from datetime import datetime
+from uuid import UUID
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -87,17 +88,16 @@ async def engagement_job_function_facet(
 @pytest.fixture
 async def create_class(
     graphql_client: GraphQLClient,
-    engagement_job_function_facet: TestingCreateFacetFacetCreate,
 ) -> Callable[..., Awaitable[TestingCreateClassClassCreate]]:
     async def inner(
-        user_key: str, name: str, scope: str | None = None
+        user_key: str, facet_uuid: UUID, name: str, scope: str | None = None
     ) -> TestingCreateClassClassCreate:
         return await graphql_client._testing__create_class(
             ClassCreateInput(
                 user_key=user_key,
                 name=name,
                 scope=scope,
-                facet_uuid=engagement_job_function_facet.uuid,
+                facet_uuid=facet_uuid,
                 validity=ValidityInput(from_=LONG_TIME_AGO),
             )
         )
