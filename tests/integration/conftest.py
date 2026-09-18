@@ -108,6 +108,7 @@ async def create_class(
 @pytest.fixture
 async def engagement_type(
     graphql_client: GraphQLClient,
+    create_class: Callable[..., Awaitable[TestingCreateClassClassCreate]],
 ) -> TestingCreateClassClassCreate:
     """An engagement type, in a facet of its own.
 
@@ -120,19 +121,17 @@ async def engagement_type(
             validity=ValidityInput(from_=LONG_TIME_AGO),
         )
     )
-    return await graphql_client._testing__create_class(
-        ClassCreateInput(
-            user_key="test-engagement-type",
-            name="Employee",
-            facet_uuid=facet.uuid,
-            validity=ValidityInput(from_=LONG_TIME_AGO),
-        )
+    return await create_class(
+        user_key="test-engagement-type",
+        facet_uuid=facet.uuid,
+        name="Employee",
     )
 
 
 @pytest.fixture
 async def primary_class(
     graphql_client: GraphQLClient,
+    create_class: Callable[..., Awaitable[TestingCreateClassClassCreate]],
 ) -> TestingCreateClassClassCreate:
     """A class marking an engagement as primary, in the `primary_type` facet.
 
@@ -145,14 +144,11 @@ async def primary_class(
             validity=ValidityInput(from_=LONG_TIME_AGO),
         )
     )
-    return await graphql_client._testing__create_class(
-        ClassCreateInput(
-            user_key="primary",
-            name="Primary",
-            scope="3000",
-            facet_uuid=facet.uuid,
-            validity=ValidityInput(from_=LONG_TIME_AGO),
-        )
+    return await create_class(
+        user_key="primary",
+        facet_uuid=facet.uuid,
+        name="Primary",
+        scope="3000",
     )
 
 
